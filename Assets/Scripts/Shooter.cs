@@ -1,14 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using UnityEngine.PlayerLoop;
 
 public class Shooter : MonoBehaviour
 {
     const int MaxShotPower = 5;
     const int RecoverySeconds = 3;
-
     int shotPower = MaxShotPower;
-
+    AudioSource shotSound;
+    
+    public TextMeshProUGUI shotPowerUI;
     public GameObject[] candyPrefabs;
     public Transform candyParentTransform;
     public CandyManager candyManager;
@@ -16,9 +19,23 @@ public class Shooter : MonoBehaviour
     public float shotTorque;
     public float baseWidth;
 
+    void Start()
+    {
+        shotSound = GetComponent<AudioSource>();
+    }
+
     void Update()
     {
         if(Input.GetButtonDown("Fire1"))Shot();    
+        ShotPowerUI();
+    }
+
+    void ShotPowerUI(){
+        string label = "";
+        for(int i = 0;i < shotPower;i++){
+            label += "+";
+        }
+        shotPowerUI.text=label;
     }
 
     GameObject SampleCandy(){
@@ -49,8 +66,10 @@ public class Shooter : MonoBehaviour
 
         candyManager.ConsumeCandy();
         ConsumePower();
-    }
 
+        shotSound.Play();
+    }
+    /*
     void OnGUI()
     {
         GUI.color = Color.black;
@@ -58,6 +77,7 @@ public class Shooter : MonoBehaviour
         for(int i = 0;i<shotPower;i++) label = label + "+";
         GUI.Label(new Rect(50,65,100,30),label);    
     }
+    */
 
     void ConsumePower(){
         shotPower--;
